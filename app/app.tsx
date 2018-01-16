@@ -2,6 +2,8 @@ import * as React from "react"
 import { View, Text, StyleSheet } from "react-native"
 import { compose } from "recompose"
 import { connect } from "react-redux"
+import { addNavigationHelpers } from 'react-navigation'
+import { AppNavigator } from "./stack"
 
 const styles = StyleSheet.create({
     container: {
@@ -14,21 +16,15 @@ const styles = StyleSheet.create({
 
 export const OnniApp = compose(
     connect((store) => ({
-        location: store.location,
         app: store.app,
-        camera: store.camera,
-        cart: store.cart,
-        reduxform: store.form
+        nav: store.NavigationReducer
     }))
-)((props: ILeitorProps) => {
+)((props: ILeitorProps & any) => {
+
     return (
-        <View style={styles.container}>
-            <Text>RAMBO</Text>
-            <Text>TYPESCRIPT</Text>
-            <Text>Material</Text>
-            <Text>REDUX</Text>
-            <Text>{props.app.title}</Text>
-            <Text>Open up App.js to start working on your app!</Text>
-        </View>
+        <AppNavigator navigation={addNavigationHelpers({
+            dispatch: props.dispatch,
+            state: props.nav
+        })} />
     )
 })
