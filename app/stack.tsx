@@ -14,12 +14,15 @@ const Dash = compose(
     connect((store) => ({ cart: store.cart }))
 )((props) => {
     return <View>
-        <Text>Cesco</Text>
+        <Text>Cesco TRUE lAst shot</Text>
         {props.cart.vouchers.map((voucher) => (<Text key={Math.random()}> {voucher.id} </Text>))}
         <Button
             title="TEST"
             onPress={() => {
                 props.dispatch({ type: 'HOME' })
+
+                const ip = Constants.linkingUri.split(':')[1]
+                console.log(ip)
             }}
         />
         <Button

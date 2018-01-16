@@ -21,7 +21,6 @@ const NavigationReducer = (state = initialState, action) => {
 
 import { Constants } from 'expo'
 import { Observable } from "rxjs";
-const ip = Constants.experienceUrl.split(':')[1]
 
 const pingEpic = action$ => {
     return action$.ofType('PING').mapTo({ type: 'DASHBOARD' })
@@ -30,6 +29,7 @@ const pingEpic = action$ => {
 export const Serialize = (object) => {
     return require("serialize-javascript")(object)
 }
+const ip = Constants.linkingUri.split(':')[1]
 export const apiURL = () => (__DEV__ ? "http:" + ip + ":7000/" : "https://api.onni.live/")
 
 const loginEpic = action$ => {
