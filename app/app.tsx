@@ -17,6 +17,8 @@ const styles = StyleSheet.create({
 export const OnniApp = compose(
     connect((store) => ({
         app: store.app,
+        camera: store.app,
+        cart: store.app,
         nav: store.NavigationReducer
     }))
 )((props: ILeitorProps & any) => {
