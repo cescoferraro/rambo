@@ -7,13 +7,14 @@ interface ICartStore {
 }
 
 interface ILeitorProps {
-    location: any
     app: any
     cart: ICartStore
     camera: {
-	multiple: boolean
-    } 
-    reduxform:any
+        multiple: boolean
+    }
+    reduxform: any
+    user:ILoggedUser
+    nav: any
 }
 
 interface IDispatch {
@@ -22,5 +23,16 @@ interface IDispatch {
 
 interface IAction {
     type: string
-    payload:any 
+    payload: any
+}
+
+interface ILoggedUser {
+    _id: string
+    token: string
+    profile: string
+    name: string
+    mail: string
+    clubId: string
+    clubName: string
+    clubPercentTicket: number
 }
