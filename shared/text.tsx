@@ -6,6 +6,7 @@ export default function MyTextInput(props) {
     return (
         <View>
             <TextInput
+                style={{ height: 50 }}
                 {...inputProps}
                 onChangeText={input.onChange}
                 onBlur={input.onBlur}

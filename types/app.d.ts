@@ -5,15 +5,16 @@ interface IVoucherRequest {
 interface ICartStore {
     vouchers: []IVoucherRequest
 }
+interface ICameraStore {
+    multiple: boolean
+}
 
 interface ILeitorProps {
     app: any
     cart: ICartStore
-    camera: {
-        multiple: boolean
-    }
+    camera: ICameraStore
     reduxform: any
-    user:ILoggedUser
+    user: ILoggedUser
     nav: any
 }
 
