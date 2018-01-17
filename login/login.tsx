@@ -16,33 +16,62 @@ export const Login = compose(
         validate
     })
 )(class LoginClass extends React.Component<{ handleSubmit: any, dispatch: any }> {
-    public static navigationOptions = { title: "ONNi Leitor RAMBO VERSION" }
+    public static navigationOptions = {
+        title: "ONNi Leitor RAMBO VERSION",
+        headerTintColor: "#Ffffff",
+        headerStyle: {
+            backgroundColor: "#16171B",
+            borderBottomColor: "#212121",
+            borderBottomWidth: 3
+        },
+        headerTitleStyle: {
+            fontSize: 18
+        }
+    }
     public render() {
         const { width, height } = Dimensions.get("window")
         return (
-            <View style={{ flex: 1, justifyContent: "center", alignSelf: "center" }}>
-                <Card>
-                    <View style={{ padding: 10, height: 200, width: 0.8 * width }}>
-                        <Text>Email</Text>
-                        <Field name={"email"}
-                            type="email"
-                            component={TextField}
-                        />
-                        <Text>Password</Text>
-                        <Field
-                            type="password"
-                            name={"password"}
-                            component={TextField}
-                        />
-                        <Button
-                            onPress={this.props.handleSubmit((payload) => {
-                                console.log()
-                                this.props.dispatch({ type: "LEITOR_LOGIN", payload })
-                            })}
-                            title="SIGN IN"
-                        />
-                    </View>
-                </Card>
+
+            <View
+                style={{
+                    padding: 0,
+                    width,
+                    margin: 0,
+                    backgroundColor: "#606266",
+                    flex: 1,
+                    justifyContent: "center",
+                    alignItems: "center",
+                    alignSelf: "center"
+                }}>
+                <View style={{
+                    width: 0.95 * width,
+                    backgroundColor: "#606266"
+                }}>
+                    <Card style={{
+                        backgroundColor: "#606266"
+                    }}>
+                        <View style={{ padding: 10 }}>
+                            <Text>Email</Text>
+                            <Field name={"email"}
+                                type="email"
+                                component={TextField}
+                            />
+                            <Text>Password</Text>
+                            <Field
+                                type="password"
+                                name={"password"}
+                                component={TextField}
+                            />
+                            <Button
+                                onPress={this.props.handleSubmit((payload) => {
+                                    console.log()
+                                    this.props.dispatch({ type: "LEITOR_LOGIN", payload })
+                                })}
+                                title="SIGN IN"
+                            />
+                        </View>
+                    </Card>
+                </View>
             </View>
         )
     }
