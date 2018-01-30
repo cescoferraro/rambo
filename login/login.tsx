@@ -1,5 +1,7 @@
 import * as React from "react"
+import { Observable } from "rxjs"
 import { Toolbar, Card } from "react-native-material-ui"
+declare var Expo: any
 import { reduxForm, Field } from "redux-form"
 import { NavigationActions } from "react-navigation"
 import { compose } from "recompose"
@@ -8,6 +10,7 @@ import { Text, View, Button, Dimensions } from "react-native"
 import { Constants } from "expo"
 import TextField from "../shared/text"
 import { validate } from "./validate"
+import { apiURL, Serialize } from "../shared/etc";
 
 export const Login = compose(
     reduxForm({
@@ -17,7 +20,7 @@ export const Login = compose(
     })
 )(class LoginClass extends React.Component<{ handleSubmit: any, dispatch: any }> {
     public static navigationOptions = {
-        title: "ONNi Leitor RAMBO VERSION",
+        title: "Staff ONNi",
         headerTintColor: "#Ffffff",
         headerStyle: {
             backgroundColor: "#16171B",
@@ -69,6 +72,12 @@ export const Login = compose(
                                 })}
                                 title="SIGN IN"
                             />
+                            <Button
+                                onPress={() => {
+                                    this.props.dispatch({ type: "FACEBOOK_LOGIN" })
+                                }}
+                                title="SIGN IN FACEBOOK"
+                            />
                         </View>
                     </Card>
                 </View>
@@ -76,3 +85,4 @@ export const Login = compose(
         )
     }
 })
+

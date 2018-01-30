@@ -1,15 +1,17 @@
 import * as React from "react"
-import { NavigationActions } from 'react-navigation'
+import { NavigationActions } from "react-navigation"
 import { connect } from "react-redux"
 import { compose } from "recompose"
-import { StyleSheet, Text, View, Dimensions, Button } from "react-native"
+import { StyleSheet, Text, View, Dimensions, Button, Vibration } from "react-native"
 import { BarCodeScanner, Permissions } from "expo"
 import { styles } from "./styles"
-var ObjectID = require("bson-objectid")
+import { blankVoucher } from "../shared/blank"
+const ObjectID = require("bson-objectid")
 
 class BarCodeCamera extends React.Component<ILeitorProps & any,
     { disabled: boolean, hasCameraPermission: any }
     > {
+    public static navigationOptions = { header: null }
     constructor(props) {
         super(props)
         this.state = {
@@ -18,7 +20,6 @@ class BarCodeCamera extends React.Component<ILeitorProps & any,
         }
         this._handleBarCodeRead = this._handleBarCodeRead.bind(this)
     }
-    static navigationOptions = { header: null }
     public componentWillMount() {
         Permissions.askAsync(Permissions.CAMERA)
             .catch((err) => { console.log(err) })
@@ -28,8 +29,8 @@ class BarCodeCamera extends React.Component<ILeitorProps & any,
                 this.setState({ hasCameraPermission: resolve.status === "granted" })
             })
     }
-
     public render() {
+        console.log(this.props.camera)
         const { hasCameraPermission } = this.state
         if (hasCameraPermission === null) {
             return <Text>Requesting for camera permission</Text>
@@ -38,6 +39,36 @@ class BarCodeCamera extends React.Component<ILeitorProps & any,
         } else {
             return (
                 <View style={{ flex: 1 }}>
+                    <View
+                        style={{
+                            zIndex: 100,
+                            display: "flex",
+                            position: "absolute",
+                            left: 10,
+                            top: 20
+                        }}>
+                        <Button
+                            color="#841584"
+                            onPress={() => {
+                                this.props.dispatch({ type: "TOGGLE_CAMERA_SIDE" })
+                            }}
+                            title={this.props.camera.side ? "FRONT" : "BACK"} />
+                    </View>
+                    <View
+                        style={{
+                            zIndex: 100,
+                            display: "flex",
+                            position: "absolute",
+                            right: 10,
+                            top: 20
+                        }}>
+                        <Button
+                            color="#841584"
+                            onPress={() => {
+                                this.props.dispatch({ type: "TOGGLE_CAMERA_FLASH" })
+                            }}
+                            title={this.props.camera.flash ? "OFF" : "ON"} />
+                    </View>
                     <View
                         style={{
                             zIndex: 100,
@@ -71,6 +102,8 @@ class BarCodeCamera extends React.Component<ILeitorProps & any,
                         />
                     </View>
                     <BarCodeScanner
+                        torchMode={this.props.camera.flash}
+                        type={this.props.camera.side}
                         onBarCodeRead={this._handleBarCodeRead}
                         style={StyleSheet.absoluteFill}
                     />
@@ -83,20 +116,26 @@ class BarCodeCamera extends React.Component<ILeitorProps & any,
         console.log("this.is valid object id? " + ObjectID.isValid(data) ? "yes" : "no")
         if (!this.state.disabled) {
             if (ObjectID.isValid(data)) {
-                if (this.props.camera.multiple) {
-                    this.props.dispatch({ type: "ADD_VOUCHER", payload: { id: data } })
+                alert(`Bar with type ${type} and data ${data} has been scanned!`)
+                this.setState({ disabled: true })
+                const timeout = setTimeout(() => { this.setState({ disabled: false }) }, 3000)
+                if (!this.props.cart.vouchers.map((voucher) => (voucher.id)).includes(data)) {
+                    Vibration.vibrate([0, 200], false)
+                    this.props.dispatch({
+                        type: "ADD_VOUCHER",
+                        payload: { ...blankVoucher(data), state: "inserted" }
+                    })
                     this.props.dispatch({ type: "READ_VOUCHER", payload: data })
-                    this.setState({ disabled: true })
-                    setTimeout(() => { this.setState({ disabled: false }) }, 2000)
+                    this.props.dispatch({ type: "USE_VOUCHER", payload: data })
+                    if (!this.props.camera.multiple) {
+                        clearTimeout(timeout)
+                        this.props.dispatch({ type: "Navigation/BACK" })
+                    }
                 } else {
-                    this.setState({ disabled: true })
-                    this.props.dispatch({ type: "Navigation/BACK" })
-                    alert(`Bar with type ${type} and data ${data} has been scanned!`);
-                    this.props.dispatch({ type: "ADD_VOUCHER", payload: { id: data } })
-                    this.props.dispatch({ type: "READ_VOUCHER", payload: data })
+                    alert(`voucher already scanned`)
                 }
             } else {
-                alert(`this is defenetly not a onni qr code`);
+                alert(`this is defenetly not a onni qr code`)
                 this.setState({ disabled: true })
                 setTimeout(() => { this.setState({ disabled: false }) }, 2000)
             }

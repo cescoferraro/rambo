@@ -6,8 +6,8 @@ export const readVoucherEpic = (action$, store) => {
         .mergeMap((action) => {
             console.log(apiURL())
             return Observable.ajax({
-                url: apiURL() + "vouchers/read/" + action.payload,
-                method: "POST",
+                url: apiURL() + "vouchers/" + action.payload,
+                method: "GET",
                 responseType: "json",
                 headers: {
                     "Content-type": "application/json",
@@ -15,21 +15,19 @@ export const readVoucherEpic = (action$, store) => {
                 },
                 crossDomain: true
             })
-                .map((respo) => {
-                    return respo
+                .flatMap((data: any) => {
+                    console.log("reading a voucher")
+                    delete data.response.customer.musicStyles
+                    return [
+                        {
+                            type: "WRITE_VOUCHER_INFO", payload: { ...data.response, state: "read" }
+                        }
+                    ]
                 })
-                .catch((err: Response) => {
-                    console.log(err)
+                .catch((err) => {
+                    console.log(err.xhr)
                     return Observable.empty()
                 })
-                .flatMapTo([{
-                    type: "Navigation/RESET",
-                    index: 0,
-                    actions: [{
-                        type: "Navigation/NAVIGATE",
-                        routeName: "Dash"
-                    }]
-                }])
         }
         )
 
